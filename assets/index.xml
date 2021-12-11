@@ -1,8 +1,16 @@
-<DocumentElement param="value">
-     <FirstElement>
-         Some Text
-     </FirstElement>
-     <SecondElement param2="something">
-         Pre-Text <Inline>Inlined text</Inline> Post-text.
-     </SecondElement>
-</DocumentElement>
+<Item xmlns="items">
+    <Base>
+        <subItem>
+            <test>
+                <Base>
+                    <subItemTwo>
+                    <test>
+                    Hello
+                    Welt
+                    </test>
+                    </subItemTwo>
+                </Base>
+            </test>
+        </subItem>
+    </Base>
+</Item>
