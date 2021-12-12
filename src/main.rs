@@ -1,10 +1,8 @@
-use serde;
-use serde_derive::{Deserialize, Serialize};
-use serde_xml_rs::{from_str, to_string};
 use ui::hello;
 use std::fs;
 extern crate syn;
 extern crate proc_macro2;
+use ui_macros::function_like;
 #[macro_use]
 extern crate quote;
 
@@ -61,6 +59,8 @@ fn main() {
     let data:String = fs::read_to_string("assets/index.xml").unwrap();
     let root: Element = data.parse().unwrap();
     let def_ident = Ident::new("test", Span::call_site());
+    let var = "abc";
+    function_like!(var);
     let exe = quote! {
         parse_xml_struct!(#def_ident);
     };
