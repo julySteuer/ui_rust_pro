@@ -628,10 +628,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "ui"
+version = "0.1.0"
+dependencies = [
+ "minifb",
+]
+
+[[package]]
 name = "ui_first_pro"
 version = "0.1.0"
 dependencies = [
  "minifb",
+ "ui",
 ]
 
 [[package]]

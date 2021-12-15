@@ -7,6 +7,5 @@ mod tests {
     }
 }
 
-pub fn hello(){
-    println!("Hello World");
-}
+pub mod color;
+pub mod texts;
