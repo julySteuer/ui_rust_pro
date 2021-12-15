@@ -1,69 +1,39 @@
-use ui::hello;
-use std::fs;
-extern crate syn;
-extern crate proc_macro2;
-use ui_macros::function_like;
-#[macro_use]
-extern crate quote;
 
-use syn::Ident;
-use proc_macro2::Span;
+extern crate minifb;
 
-extern crate minidom;
+use minifb::{Key, Window, WindowOptions};
 
-use minidom::Element;
-
-macro_rules! cast_enum {
-    ($it:path, $ret_type:expr) => {
-        if let $it(e) = $ret_type {
-            Some(e)
-        }
-        else{
-            None
-        }
-    };
-}
-
-struct test {
-    pub x: isize
-}
-
-macro_rules! parse_xml_struct {
-    ($struct_name:ident) => {
-        let elem = &$struct_name {
-            x:1
-        };
-        println!("{}", elem.x);
-    };
-}
-
-fn list_children(elem: minidom::node::Node){
-    if let minidom::node::Node::Element(val) = elem {
-        for iterator in val.children() {
-            let text = &iterator.text();
-            let text = text.trim();
-            let splitted = text.split("\r\n");
-            let mut end_strings: Vec<String> = Vec::new();
-            for split in splitted {
-                end_strings.push(String::from(split.trim()));
-            }
-            for split in end_strings {
-                println!("{}", split);
-            }
-            list_children(minidom::Node::Element(iterator.clone())); // has to include Node
-        }
-    }
-}
+const WIDTH: usize = 640;
+const HEIGHT: usize = 360;
 
 fn main() {
-    let data:String = fs::read_to_string("assets/index.xml").unwrap();
-    let root: Element = data.parse().unwrap();
-    let def_ident = Ident::new("test", Span::call_site());
-    let var = "abc";
-    function_like!(var);
-    let exe = quote! {
-        parse_xml_struct!(#def_ident);
-    };
-    let t = proc_macro2::TokenStream::from(exe);
-    list_children(minidom::node::Node::Element(root));
+    let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
+
+    let c = 16712640;
+    let t = (c & 0xff0000) >> 16;
+    println!("{}", t);
+
+    let mut window = Window::new(
+        "Test - ESC to exit",
+        WIDTH,
+        HEIGHT,
+        WindowOptions::default(),
+    )
+    .unwrap_or_else(|e| {
+        panic!("{}", e);
+    });
+
+    // Limit to max ~60 fps update rate
+    window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
+
+    while window.is_open() && !window.is_key_down(Key::Escape) {
+        for (i, pixel) in buffer.iter_mut().enumerate() {
+            *pixel = (i*200) as u32; // write something more funny here!
+        }
+
+        // We unwrap here as we want this code to exit if it fails. Real applications may want to handle this in a different way
+        window
+            .update_with_buffer(&buffer, WIDTH, HEIGHT)
+            .unwrap();
+    }
 }
