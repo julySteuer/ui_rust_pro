@@ -1,6 +1,7 @@
 extern crate minifb;
 use ui::color::{rgb_2_int, int_2_rgb};
 use ui::texts::text::Text;
+use ui::context::Context;
 
 use minifb::{Key, Window, WindowOptions};
 
@@ -9,7 +10,8 @@ const HEIGHT: usize = 360;
 
 fn main() {
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
-    let mut text = Text::new();
+    let context: Context = Context::new(0,0, WIDTH as u32, HEIGHT as u32, 1);
+    let mut text = Text::new(context);
 
     let c = 16712640;
     let t = int_2_rgb(c);
@@ -25,11 +27,9 @@ fn main() {
     });
 
     // Limit to max ~60 fps update rate
-    window.limit_update_rate(Some(std::time::Duration::from_micros(16600)));
+    window.limit_update_rate(Some(std::time::Duration::from_micros(16600*2)));
     println!("{}", buffer.len());
-    for i in 0..1000 {
-            buffer[i] = i as u32;
-    }
+    buffer[0] = c;
     while window.is_open() && !window.is_key_down(Key::Escape) {
         text.render(&mut buffer);
         
@@ -37,5 +37,7 @@ fn main() {
         window
             .update_with_buffer(&buffer, WIDTH, HEIGHT)
             .unwrap();
+        text.add(&window);
+        buffer = vec![0; WIDTH * HEIGHT];
     }
 }

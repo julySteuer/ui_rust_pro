@@ -3,43 +3,59 @@ pub mod text;
 use text::Text;
 use minifb::{Window, Key};
 use crate::color::Color;
+use crate::context::Context; //macro rules for making char
 
-fn a() -> char::Char{
-    let a_structure:[[u32;5];8] = [[0,0,0,0,0],
-                               [0,0,0,0,0],// 2 row buffer up
-                               [0,0,1,0,0],
-                               [0,0,1,0,0],
-                               [0,1,1,1,0],
-                               [1,0,0,0,1],
-                               [0,0,0,0,0],//2 row buffer down
-                               [0,0,0,0,0]];
-    let  a_char = 'A';
-    char::Char {
-        structure:a_structure,
-        character: String::from(a_char),
-        col: Color{r:255, g:255, b:255}
-    }
+/*
+[[0,0,0,0,0],
+[0,0,0,0,0],// 2 row buffer up
+[0,0,0,0,0],
+[0,0,0,0,0],
+[0,0,0,0,0],
+[0,0,0,0,0],
+[0,0,0,0,0],//2 row buffer down
+[0,0,0,0,0]]
+*/
+macro_rules! make_letter {
+    ($name:ident, $structure:expr) => {
+        fn $name(context:&Context) -> char::Char{
+            let structure:[[u32;5];9] = $structure;
+            let character = stringify!($name);
+            char::Char {
+                structure,
+                character: String::from(character),
+                col: Color{r:255, g:255, b:255},
+                context: context.clone()
+            }
+        }
+    };
 }
 
-impl Text { // add elements and render them
+
+make_letter!(b, [[0,0,0,0,0],
+    [0,0,0,0,0],// 2 row buffer up
+    [1,1,1,0,0],
+    [1,0,0,1,0],
+    [1,1,1,1,0],
+    [1,0,0,1,0],
+    [1,1,1,0,0],//2 row buffer down
+    [0,0,0,0,0],
+    [0,0,0,0,0]]);
+
+impl Text { // add elements and render them 
     pub fn add(&mut self, window:&Window){
+        if window.get_keys().len() != 0 {
+            self.local_context.x += 6;
+        }
         window.get_keys().iter().for_each(|key|
             match key {
-                Key::A => self.characters.push(a()),
+                Key::B => self.characters.push(b(&self.local_context)),
+                Key::Backspace => {self.characters.pop();self.local_context.x -= 12;},
                 _ => ()
             }
         );
     }
 
-    pub fn new() -> Text {
-        Text {
-            characters: vec![]
-        }
-    }
-
-    pub fn render(&self, window:&mut Vec<u32>){
-        for i in &self.characters {
-            i.render(window, 100);
-        }
+    fn add_char_builder(){
+        
     }
 }

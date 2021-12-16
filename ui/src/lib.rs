@@ -9,3 +9,4 @@ mod tests {
 
 pub mod color;
 pub mod texts;
+pub mod context;
