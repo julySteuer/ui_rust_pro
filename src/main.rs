@@ -10,7 +10,7 @@ const HEIGHT: usize = 360;
 
 fn main() {
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
-    let context: Context = Context::new(0,0, WIDTH as u32, HEIGHT as u32, 1);
+    let context: Context = Context::new(0,0, WIDTH as u32, HEIGHT as u32, 20);
     let mut text = Text::new(context);
 
     let c = 16712640;

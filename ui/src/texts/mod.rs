@@ -54,8 +54,4 @@ impl Text { // add elements and render them
             }
         );
     }
-
-    fn add_char_builder(){
-        
-    }
 }
