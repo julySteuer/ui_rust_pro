@@ -22,4 +22,11 @@ impl Text {
             i.render(window, 640);
         }
     }
+
+    pub fn resize(&mut self, scale:u32){
+        self.local_context.scale = scale;
+        for i in &mut self.characters {
+            i.out = i.resize();
+        }
+    }
 }

@@ -7,7 +7,8 @@ pub struct Char {
     pub character: String,
     pub structure: [[u32; 5];9],
     pub col: Color,
-    pub context: context::Context
+    pub context: context::Context,
+    pub out:Vec<Vec<u32>>
 }
 
 impl Char { // Uppercase and lowercase
@@ -16,34 +17,26 @@ impl Char { // Uppercase and lowercase
             character,
             structure,
             col,
-            context
+            context,
+            out:vec![vec![]]
         }
     }
-    fn resize(&self) -> Vec<Vec<u32>> {
-        let mut out: Vec<Vec<u32>> = vec![vec![0;(self.context.scale + 5) as usize];(self.context.scale + 8) as usize];
-        for y in 0..9 { // move 0 chars effectivly
+    pub fn resize(&self) -> Vec<Vec<u32>> {
+        let mut out: Vec<Vec<u32>> = vec![vec![0;(self.context.scale * 5) as usize];(self.context.scale * 9) as usize];
+        for y in 0..9 {
             for x in 0..5 {
-                if self.structure[y][x] == 1 {
-                    for zoom_x in 0..self.context.scale {
-                        for zoom_y in 0..self.context.scale {
-                            out[y+zoom_y as usize][x+zoom_x as usize] = 1;
-                        }
-                    }
-                }
-                else {
-                    for zoom_x in 0..self.context.scale {
-                        for zoom_y in 0..self.context.scale {
-                            out[y+zoom_y as usize][x+zoom_x as usize] = 0;
-                        }
-                    }
-                }
+              for z_x in 0..self.context.scale {
+                  for z_y in 0..self.context.scale {
+                    out[(y*self.context.scale+z_y) as usize][(x*self.context.scale+z_x) as usize] = self.structure[y as usize][x as usize];
+                  }
+              }  
             }
         }
         out
     }
 
     pub fn render(&self, buffer:&mut Vec<u32>, width:u32){
-        let char_buffer = self.resize();
+        let char_buffer = &self.out;
         for y in 0..char_buffer.len() {
             for x in 0..char_buffer[0].len() {
                 if char_buffer[y][x] == 1 {

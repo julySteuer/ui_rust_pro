@@ -10,12 +10,8 @@ const HEIGHT: usize = 360;
 
 fn main() {
     let mut buffer: Vec<u32> = vec![0; WIDTH * HEIGHT];
-    let context: Context = Context::new(0,0, WIDTH as u32, HEIGHT as u32, 20);
+    let context: Context = Context::new(0,0, WIDTH as u32, HEIGHT as u32, 5);
     let mut text = Text::new(context);
-
-    let c = 16712640;
-    let t = int_2_rgb(c);
-
     let mut window = Window::new(
         "Test - ESC to exit",
         WIDTH,
@@ -27,9 +23,7 @@ fn main() {
     });
 
     // Limit to max ~60 fps update rate
-    window.limit_update_rate(Some(std::time::Duration::from_micros(16600*2)));
-    println!("{}", buffer.len());
-    buffer[0] = c;
+    window.limit_update_rate(Some(std::time::Duration::from_micros(16600*5)));
     while window.is_open() && !window.is_key_down(Key::Escape) {
         text.render(&mut buffer);
         
